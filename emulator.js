@@ -63,40 +63,78 @@ class CPU6502 {
             0x84: { name: 'STY', mode: 'zeropage', cycles: 3, execute: this.STY.bind(this) },
             0x8C: { name: 'STY', mode: 'absolute', cycles: 4, execute: this.STY.bind(this) },
             
-            // ADC - Add with Carry
+            // Register Transfer Instructions
+            0xAA: { name: 'TAX', mode: 'implied', cycles: 2, execute: this.TAX.bind(this) },
+            0xA8: { name: 'TAY', mode: 'implied', cycles: 2, execute: this.TAY.bind(this) },
+            0x8A: { name: 'TXA', mode: 'implied', cycles: 2, execute: this.TXA.bind(this) },
+            0x98: { name: 'TYA', mode: 'implied', cycles: 2, execute: this.TYA.bind(this) },
+            
+            // Stack Operations
+            0x48: { name: 'PHA', mode: 'implied', cycles: 3, execute: this.PHA.bind(this) },
+            0x68: { name: 'PLA', mode: 'implied', cycles: 4, execute: this.PLA.bind(this) },
+            0x08: { name: 'PHP', mode: 'implied', cycles: 3, execute: this.PHP.bind(this) },
+            0x28: { name: 'PLP', mode: 'implied', cycles: 4, execute: this.PLP.bind(this) },
+            
+            // Logical Operations
+            0x29: { name: 'AND', mode: 'immediate', cycles: 2, execute: this.AND.bind(this) },
+            0x25: { name: 'AND', mode: 'zeropage', cycles: 3, execute: this.AND.bind(this) },
+            0x2D: { name: 'AND', mode: 'absolute', cycles: 4, execute: this.AND.bind(this) },
+            0x09: { name: 'ORA', mode: 'immediate', cycles: 2, execute: this.ORA.bind(this) },
+            0x05: { name: 'ORA', mode: 'zeropage', cycles: 3, execute: this.ORA.bind(this) },
+            0x0D: { name: 'ORA', mode: 'absolute', cycles: 4, execute: this.ORA.bind(this) },
+            0x49: { name: 'EOR', mode: 'immediate', cycles: 2, execute: this.EOR.bind(this) },
+            0x45: { name: 'EOR', mode: 'zeropage', cycles: 3, execute: this.EOR.bind(this) },
+            0x4D: { name: 'EOR', mode: 'absolute', cycles: 4, execute: this.EOR.bind(this) },
+            0x24: { name: 'BIT', mode: 'zeropage', cycles: 3, execute: this.BIT.bind(this) },
+            0x2C: { name: 'BIT', mode: 'absolute', cycles: 4, execute: this.BIT.bind(this) },
+            
+            // Arithmetic Instructions
             0x69: { name: 'ADC', mode: 'immediate', cycles: 2, execute: this.ADC.bind(this) },
-            
-            // SBC - Subtract with Carry
+            0x65: { name: 'ADC', mode: 'zeropage', cycles: 3, execute: this.ADC.bind(this) },
+            0x6D: { name: 'ADC', mode: 'absolute', cycles: 4, execute: this.ADC.bind(this) },
             0xE9: { name: 'SBC', mode: 'immediate', cycles: 2, execute: this.SBC.bind(this) },
+            0xE5: { name: 'SBC', mode: 'zeropage', cycles: 3, execute: this.SBC.bind(this) },
+            0xED: { name: 'SBC', mode: 'absolute', cycles: 4, execute: this.SBC.bind(this) },
             
-            // INX - Increment X
+            // Increment/Decrement Instructions
             0xE8: { name: 'INX', mode: 'implied', cycles: 2, execute: this.INX.bind(this) },
-            
-            // INY - Increment Y
             0xC8: { name: 'INY', mode: 'implied', cycles: 2, execute: this.INY.bind(this) },
-            
-            // DEX - Decrement X
             0xCA: { name: 'DEX', mode: 'implied', cycles: 2, execute: this.DEX.bind(this) },
-            
-            // DEY - Decrement Y
             0x88: { name: 'DEY', mode: 'implied', cycles: 2, execute: this.DEY.bind(this) },
             
-            // CMP - Compare Accumulator
+            // Comparison Instructions
             0xC9: { name: 'CMP', mode: 'immediate', cycles: 2, execute: this.CMP.bind(this) },
+            0xC5: { name: 'CMP', mode: 'zeropage', cycles: 3, execute: this.CMP.bind(this) },
+            0xCD: { name: 'CMP', mode: 'absolute', cycles: 4, execute: this.CMP.bind(this) },
+            0xE0: { name: 'CPX', mode: 'immediate', cycles: 2, execute: this.CPX.bind(this) },
+            0xE4: { name: 'CPX', mode: 'zeropage', cycles: 3, execute: this.CPX.bind(this) },
+            0xC0: { name: 'CPY', mode: 'immediate', cycles: 2, execute: this.CPY.bind(this) },
+            0xC4: { name: 'CPY', mode: 'zeropage', cycles: 3, execute: this.CPY.bind(this) },
             
-            // JMP - Jump
-            0x4C: { name: 'JMP', mode: 'absolute', cycles: 3, execute: this.JMP.bind(this) },
-            
-            // BNE - Branch if Not Equal
-            0xD0: { name: 'BNE', mode: 'relative', cycles: 2, execute: this.BNE.bind(this) },
-            
-            // BEQ - Branch if Equal
+            // Branch Instructions
             0xF0: { name: 'BEQ', mode: 'relative', cycles: 2, execute: this.BEQ.bind(this) },
+            0xD0: { name: 'BNE', mode: 'relative', cycles: 2, execute: this.BNE.bind(this) },
+            0x90: { name: 'BCC', mode: 'relative', cycles: 2, execute: this.BCC.bind(this) },
+            0xB0: { name: 'BCS', mode: 'relative', cycles: 2, execute: this.BCS.bind(this) },
+            0x30: { name: 'BMI', mode: 'relative', cycles: 2, execute: this.BMI.bind(this) },
+            0x10: { name: 'BPL', mode: 'relative', cycles: 2, execute: this.BPL.bind(this) },
+            0x50: { name: 'BVC', mode: 'relative', cycles: 2, execute: this.BVC.bind(this) },
+            0x70: { name: 'BVS', mode: 'relative', cycles: 2, execute: this.BVS.bind(this) },
             
-            // NOP - No Operation
+            // Jump and Subroutine Instructions
+            0x4C: { name: 'JMP', mode: 'absolute', cycles: 3, execute: this.JMP.bind(this) },
+            0x20: { name: 'JSR', mode: 'absolute', cycles: 6, execute: this.JSR.bind(this) },
+            0x60: { name: 'RTS', mode: 'implied', cycles: 6, execute: this.RTS.bind(this) },
+            
+            // Flag Control Instructions
+            0x18: { name: 'CLC', mode: 'implied', cycles: 2, execute: this.CLC.bind(this) },
+            0x38: { name: 'SEC', mode: 'implied', cycles: 2, execute: this.SEC.bind(this) },
+            0xB8: { name: 'CLV', mode: 'implied', cycles: 2, execute: this.CLV.bind(this) },
+            0x78: { name: 'SEI', mode: 'implied', cycles: 2, execute: this.SEI.bind(this) },
+            0x58: { name: 'CLI', mode: 'implied', cycles: 2, execute: this.CLI.bind(this) },
+            
+            // Utility Instructions
             0xEA: { name: 'NOP', mode: 'implied', cycles: 2, execute: this.NOP.bind(this) },
-            
-            // BRK - Break
             0x00: { name: 'BRK', mode: 'implied', cycles: 7, execute: this.BRK.bind(this) }
         };
     }
@@ -279,6 +317,195 @@ class CPU6502 {
         this.setFlag(this.FLAG_BREAK, true);
     }
 
+    // Register Transfer Instructions
+    TAX() {
+        this.X = this.A;
+        this.updateZeroAndNegativeFlags(this.X);
+    }
+
+    TAY() {
+        this.Y = this.A;
+        this.updateZeroAndNegativeFlags(this.Y);
+    }
+
+    TXA() {
+        this.A = this.X;
+        this.updateZeroAndNegativeFlags(this.A);
+    }
+
+    TYA() {
+        this.A = this.Y;
+        this.updateZeroAndNegativeFlags(this.A);
+    }
+
+    // Stack Operations
+    PHA() {
+        this.write(0x0100 + this.SP, this.A);
+        this.SP = (this.SP - 1) & 0xFF;
+    }
+
+    PLA() {
+        this.SP = (this.SP + 1) & 0xFF;
+        this.A = this.read(0x0100 + this.SP);
+        this.updateZeroAndNegativeFlags(this.A);
+    }
+
+    PHP() {
+        this.write(0x0100 + this.SP, this.P | this.FLAG_BREAK);
+        this.SP = (this.SP - 1) & 0xFF;
+    }
+
+    PLP() {
+        this.SP = (this.SP + 1) & 0xFF;
+        this.P = this.read(0x0100 + this.SP);
+        this.setFlag(this.FLAG_BREAK, false);
+        this.setFlag(this.FLAG_UNUSED, true);
+    }
+
+    // Logical Operations
+    AND(mode) {
+        const value = this.getOperand(mode);
+        this.A = this.A & value;
+        this.updateZeroAndNegativeFlags(this.A);
+    }
+
+    ORA(mode) {
+        const value = this.getOperand(mode);
+        this.A = this.A | value;
+        this.updateZeroAndNegativeFlags(this.A);
+    }
+
+    EOR(mode) {
+        const value = this.getOperand(mode);
+        this.A = this.A ^ value;
+        this.updateZeroAndNegativeFlags(this.A);
+    }
+
+    BIT(mode) {
+        const value = this.getOperand(mode);
+        const result = this.A & value;
+        this.setFlag(this.FLAG_ZERO, result === 0);
+        this.setFlag(this.FLAG_NEGATIVE, (value & 0x80) !== 0);
+        this.setFlag(this.FLAG_OVERFLOW, (value & 0x40) !== 0);
+    }
+
+    // Additional Comparison Instructions
+    CPX(mode) {
+        const value = this.getOperand(mode);
+        const result = this.X - value;
+        
+        this.setFlag(this.FLAG_CARRY, this.X >= value);
+        this.updateZeroAndNegativeFlags(result & 0xFF);
+    }
+
+    CPY(mode) {
+        const value = this.getOperand(mode);
+        const result = this.Y - value;
+        
+        this.setFlag(this.FLAG_CARRY, this.Y >= value);
+        this.updateZeroAndNegativeFlags(result & 0xFF);
+    }
+
+    // Additional Branch Instructions
+    BCC(mode) {
+        if (!this.getFlag(this.FLAG_CARRY)) {
+            const offset = this.getOperand(mode);
+            this.PC = (this.PC + offset) & 0xFFFF;
+        } else {
+            this.PC++; // Skip the offset byte
+        }
+    }
+
+    BCS(mode) {
+        if (this.getFlag(this.FLAG_CARRY)) {
+            const offset = this.getOperand(mode);
+            this.PC = (this.PC + offset) & 0xFFFF;
+        } else {
+            this.PC++; // Skip the offset byte
+        }
+    }
+
+    BMI(mode) {
+        if (this.getFlag(this.FLAG_NEGATIVE)) {
+            const offset = this.getOperand(mode);
+            this.PC = (this.PC + offset) & 0xFFFF;
+        } else {
+            this.PC++; // Skip the offset byte
+        }
+    }
+
+    BPL(mode) {
+        if (!this.getFlag(this.FLAG_NEGATIVE)) {
+            const offset = this.getOperand(mode);
+            this.PC = (this.PC + offset) & 0xFFFF;
+        } else {
+            this.PC++; // Skip the offset byte
+        }
+    }
+
+    BVC(mode) {
+        if (!this.getFlag(this.FLAG_OVERFLOW)) {
+            const offset = this.getOperand(mode);
+            this.PC = (this.PC + offset) & 0xFFFF;
+        } else {
+            this.PC++; // Skip the offset byte
+        }
+    }
+
+    BVS(mode) {
+        if (this.getFlag(this.FLAG_OVERFLOW)) {
+            const offset = this.getOperand(mode);
+            this.PC = (this.PC + offset) & 0xFFFF;
+        } else {
+            this.PC++; // Skip the offset byte
+        }
+    }
+
+    // Subroutine Instructions
+    JSR(mode) {
+        const address = this.getAddress(mode);
+        const returnAddress = this.PC - 1;
+        
+        // Push return address to stack (high byte first)
+        this.write(0x0100 + this.SP, (returnAddress >> 8) & 0xFF);
+        this.SP = (this.SP - 1) & 0xFF;
+        this.write(0x0100 + this.SP, returnAddress & 0xFF);
+        this.SP = (this.SP - 1) & 0xFF;
+        
+        this.PC = address;
+    }
+
+    RTS() {
+        // Pull return address from stack (low byte first)
+        this.SP = (this.SP + 1) & 0xFF;
+        const low = this.read(0x0100 + this.SP);
+        this.SP = (this.SP + 1) & 0xFF;
+        const high = this.read(0x0100 + this.SP);
+        
+        this.PC = ((high << 8) | low) + 1;
+    }
+
+    // Flag Control Instructions
+    CLC() {
+        this.setFlag(this.FLAG_CARRY, false);
+    }
+
+    SEC() {
+        this.setFlag(this.FLAG_CARRY, true);
+    }
+
+    CLV() {
+        this.setFlag(this.FLAG_OVERFLOW, false);
+    }
+
+    SEI() {
+        this.setFlag(this.FLAG_INTERRUPT, true);
+    }
+
+    CLI() {
+        this.setFlag(this.FLAG_INTERRUPT, false);
+    }
+
     step() {
         if (!this.running || !this.assembled) return false;
 
@@ -322,16 +549,63 @@ class Assembler {
             'STA': { 'zp': 0x85, 'abs': 0x8D },
             'STX': { 'zp': 0x86, 'abs': 0x8E },
             'STY': { 'zp': 0x84, 'abs': 0x8C },
-            'ADC': { '#': 0x69 },
-            'SBC': { '#': 0xE9 },
+            
+            // Register Transfer
+            'TAX': { 'imp': 0xAA },
+            'TAY': { 'imp': 0xA8 },
+            'TXA': { 'imp': 0x8A },
+            'TYA': { 'imp': 0x98 },
+            
+            // Stack Operations
+            'PHA': { 'imp': 0x48 },
+            'PLA': { 'imp': 0x68 },
+            'PHP': { 'imp': 0x08 },
+            'PLP': { 'imp': 0x28 },
+            
+            // Logical Operations
+            'AND': { '#': 0x29, 'zp': 0x25, 'abs': 0x2D },
+            'ORA': { '#': 0x09, 'zp': 0x05, 'abs': 0x0D },
+            'EOR': { '#': 0x49, 'zp': 0x45, 'abs': 0x4D },
+            'BIT': { 'zp': 0x24, 'abs': 0x2C },
+            
+            // Arithmetic
+            'ADC': { '#': 0x69, 'zp': 0x65, 'abs': 0x6D },
+            'SBC': { '#': 0xE9, 'zp': 0xE5, 'abs': 0xED },
+            
+            // Increment/Decrement
             'INX': { 'imp': 0xE8 },
             'INY': { 'imp': 0xC8 },
             'DEX': { 'imp': 0xCA },
             'DEY': { 'imp': 0x88 },
-            'CMP': { '#': 0xC9 },
-            'JMP': { 'abs': 0x4C },
-            'BNE': { 'rel': 0xD0 },
+            
+            // Comparisons
+            'CMP': { '#': 0xC9, 'zp': 0xC5, 'abs': 0xCD },
+            'CPX': { '#': 0xE0, 'zp': 0xE4 },
+            'CPY': { '#': 0xC0, 'zp': 0xC4 },
+            
+            // Branches
             'BEQ': { 'rel': 0xF0 },
+            'BNE': { 'rel': 0xD0 },
+            'BCC': { 'rel': 0x90 },
+            'BCS': { 'rel': 0xB0 },
+            'BMI': { 'rel': 0x30 },
+            'BPL': { 'rel': 0x10 },
+            'BVC': { 'rel': 0x50 },
+            'BVS': { 'rel': 0x70 },
+            
+            // Jumps and Subroutines
+            'JMP': { 'abs': 0x4C },
+            'JSR': { 'abs': 0x20 },
+            'RTS': { 'imp': 0x60 },
+            
+            // Flag Control
+            'CLC': { 'imp': 0x18 },
+            'SEC': { 'imp': 0x38 },
+            'CLV': { 'imp': 0xB8 },
+            'SEI': { 'imp': 0x78 },
+            'CLI': { 'imp': 0x58 },
+            
+            // Utility
             'NOP': { 'imp': 0xEA },
             'BRK': { 'imp': 0x00 }
         };
@@ -439,10 +713,10 @@ class Assembler {
         
         // Check for label (for jumps/branches)
         if (this.labels[operand] !== undefined) {
-            if (mnemonic === 'JMP') {
+            if (mnemonic === 'JMP' || mnemonic === 'JSR') {
                 const addr = this.labels[operand];
                 return [this.opcodes[mnemonic]['abs'], addr & 0xFF, (addr >> 8) & 0xFF];
-            } else if (mnemonic === 'BNE' || mnemonic === 'BEQ') {
+            } else if (['BNE', 'BEQ', 'BCC', 'BCS', 'BMI', 'BPL', 'BVC', 'BVS'].includes(mnemonic)) {
                 const offset = this.labels[operand] - (address + 2);
                 if (offset < -128 || offset > 127) {
                     throw new Error(`Branch target too far: ${offset}`);
@@ -465,8 +739,8 @@ class Assembler {
         }
         
         // Label reference
-        if (mnemonic === 'JMP') return 3;
-        if (mnemonic === 'BNE' || mnemonic === 'BEQ') return 2;
+        if (mnemonic === 'JMP' || mnemonic === 'JSR') return 3;
+        if (['BNE', 'BEQ', 'BCC', 'BCS', 'BMI', 'BPL', 'BVC', 'BVS'].includes(mnemonic)) return 2;
         
         return 2; // Default
     }
@@ -509,38 +783,49 @@ class EmulatorApp {
     }
 
     loadExample() {
-        const exampleCode = `; Hello World Example
+        const exampleCode = `; Enhanced Hello World with new instructions
 LDA #$48    ; Load 'H' (ASCII 72)
 STA $0200   ; Store to screen memory
 LDA #$65    ; Load 'e' (ASCII 101)
 STA $0201   ; Store to screen memory
 LDA #$6C    ; Load 'l' (ASCII 108)
 STA $0202   ; Store to screen memory
-LDA #$6C    ; Load 'l' (ASCII 108)
-STA $0203   ; Store to screen memory
+STA $0203   ; Store 'l' again
 LDA #$6F    ; Load 'o' (ASCII 111)
 STA $0204   ; Store to screen memory
-LDA #$20    ; Load ' ' (ASCII 32)
-STA $0205   ; Store to screen memory
-LDA #$57    ; Load 'W' (ASCII 87)
-STA $0206   ; Store to screen memory
-LDA #$6F    ; Load 'o' (ASCII 111)
-STA $0207   ; Store to screen memory
-LDA #$72    ; Load 'r' (ASCII 114)
-STA $0208   ; Store to screen memory
-LDA #$6C    ; Load 'l' (ASCII 108)
-STA $0209   ; Store to screen memory
-LDA #$64    ; Load 'd' (ASCII 100)
-STA $020A   ; Store to screen memory
+
+; Demonstrate register transfer
+LDA #$20    ; Load space character
+TAX         ; Transfer A to X
+TXA         ; Transfer X back to A
+STA $0205   ; Store space
+
+; Counter example using new instructions
+LDY #$05    ; Start counter at 5
+countloop:
+    TYA         ; Transfer Y to A
+    ADC #$30    ; Convert to ASCII
+    STA $0206   ; Display digit
+    DEY         ; Decrement counter
+    CPY #$00    ; Compare with 0
+    BNE countloop ; Branch if not equal
+
 BRK         ; Break (end program)
 
-; Try this calculation example:
-; LDA #$05    ; Load 5
-; ADC #$03    ; Add 3 (result: 8)
-; STA $0200   ; Store result (will show as [08])`;
+; Try these examples too:
+; Stack operations:
+; LDA #$42
+; PHA         ; Push A to stack
+; LDA #$00    ; Clear A
+; PLA         ; Pull from stack (A = $42 again)
+
+; Logical operations:
+; LDA #$FF
+; AND #$0F    ; Result: $0F (bitwise AND)
+; ORA #$F0    ; Result: $FF (bitwise OR)`;
         
         this.assemblyCode.value = exampleCode;
-        this.log('Example program loaded');
+        this.log('Enhanced example program loaded with new instructions');
     }
 
     clearCode() {
